@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <title>
+            QASRL Parser
+        </title>
+        <link rel = "stylesheet" type = "text/css" href = "demo.css" />
+    </head>
+    <body>
+        <div class="pane-container">
+            <div class="pane model">
+                <div class="pane__left model__input">
+                    <div class="model__content">
+                        <h2><span>QASRL Parser</span></h2>
+                        <div class="model__content">
+                            
+        <div class="form__field">
+            <label for="input-sentence">sentence</label>
+            <input type="text" id="input-sentence" type="text" required value placeholder="input goes here">
+        </div>
+
+                            <div class="form__field form__field--btn">
+                                <button type="button" class="btn btn--icon-disclosure" onclick="predict()">Predict</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pane__right model__output model__output--empty">
+                    <div class="pane__thumb"></div>
+                    <div class="model__content">
+                        <div id="output" class="output">
+                            <div class="placeholder">
+                                <div class="placeholder__content">
+                                    <p>Run model to view results</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="node_modules/gojs/release/go-debug.js"></script>
+    <script>
+    function predict() {
+        var quotedFieldList = ['sentence'];
+        var data = {};
+        quotedFieldList.forEach(function(fieldName) {
+            data[fieldName] = document.getElementById("input-" + fieldName).value;
+        })
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/predict');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status == 200) {
+                // If you want a more impressive visualization than just
+                // outputting the raw JSON, change this part of the code.
+                var div = '<div id="myDiagramDiv" style="border: solid 1px blue; width:600px; height:600px"></div>';
+                document.getElementById("output").innerHTML = div;
+
+                var response = JSON.parse(xhr.responseText);
+
+                var nodes = [{key: "sentence", text: response['words'].join(" "), color: "lightgreen"}];
+                var links = [];
+
+                for (i = 0; i < response['verbs'].length; i++) {
+                    verb = response['verbs'][i];
+                    verb_str = verb['verb'];
+                    verb_ind = verb['index'];
+                    verb_key = "verb_" + verb_ind
+
+                    nodes.push({key: verb_key, text: verb_str, color:"red"})
+                    links.push({from: "sentence", to: verb_key})
+
+                    for (j = 0; j < verb['qa_pairs'].length; j++) {
+                        pair = verb['qa_pairs'][j];
+                        question = pair['question'];
+                        question_key = "question_" + verb_ind + "_" + j
+
+                        nodes.push({key: question_key, text: question, color:"lightblue"});
+                        links.push({from: verb_key, to: question_key});
+
+                        for (k = 0; k < pair['spans'].length; k++) {
+                            span = pair['spans'][k];
+                            span_key = "span_" + verb_ind + "_" + j + "_" + k
+
+                            nodes.push({key: span_key, text:span, color:"lightyellow"});
+                            links.push({from: question_key, to: span_key});
+                        }
+                    }
+                }
+                
+                var diagram = new go.Diagram("myDiagramDiv");
+                diagram.layout = new go.TreeLayout();
+
+                var $ = go.GraphObject.make;
+                diagram.nodeTemplate =
+                    $(go.Node, "Auto",  // the Shape automatically fits around the TextBlock
+                        $(go.Shape, "RoundedRectangle",  // use this kind of figure for the Shape
+                            // bind Shape.fill to Node.data.color
+                            new go.Binding("fill", "color")),
+                        $(go.TextBlock,
+                          { margin: 3 },  // some room around the text
+                          // bind TextBlock.text to Node.data.key
+                          new go.Binding("text", "text"))
+              );
+
+
+                diagram.model = new go.GraphLinksModel(
+                        nodes, links
+                );
+            }
+        };
+        xhr.send(JSON.stringify(data));
+    }
+    </script>
+</html>

@@ -1,0 +1,49 @@
+{
+  "vocabulary": {
+    "pretrained_files": {"tokens": "data/glove/glove.6B.100d.txt.gz"},
+    "only_include_pretrained_words": true
+  },
+  "dataset_reader": {
+      "type": "qasrl"
+ },
+
+  "train_data_path": "${QASRL_DATA_DIR}/orig/train.jsonl.gz",
+  "validation_data_path": "${QASRL_DATA_DIR}/orig/dev.jsonl.gz",
+  "test_data_path": "${QASRL_DATA_DIR}/orig/test.jsonl.gz",
+  "model": {
+    "type": "span_detector",
+    "text_field_embedder": {
+      "tokens": {
+        "type": "embedding",
+        "embedding_dim": 100,
+        "pretrained_file": "data/glove/glove.6B.100d.txt.gz",
+        "trainable": true
+      }
+    },
+    "stacked_encoder": {
+      "type": "alternating_highway_lstm_cuda",
+      "input_size": 200,
+      "hidden_size": 300,
+      "num_layers": 8,
+      "recurrent_dropout_probability": 0.1
+    },
+    "predicate_feature_dim":100,
+    "hidden_dim":100
+  },
+  "iterator": {
+    "type": "bucket",
+    "sorting_keys": [["text", "num_tokens"]],
+    "batch_size" : 80
+  },
+  "trainer": {
+    "num_epochs": 200,
+    "grad_norm": 1.0,
+    "patience": 10,
+    "validation_metric": "+fscore-at-0.5",
+    "cuda_device": 0,
+    "optimizer": {
+      "type": "adadelta",
+      "rho": 0.95
+    }
+  }
+}

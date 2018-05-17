@@ -1,0 +1,3 @@
+from nrl.modules.question_generator.question_generator import QuestionGenerator
+from nrl.modules.question_generator.local_slot_predictor import LocalSlotPredictor
+from nrl.modules.question_generator.sequence_slot_predictor import SequenceSlotPredictor

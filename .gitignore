@@ -1,0 +1,6 @@
+*.swp
+*.swo
+*.pyc
+.cache/
+demo/node_modules
+demo/package-lock.json
