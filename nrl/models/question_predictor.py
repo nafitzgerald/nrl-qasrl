@@ -61,7 +61,7 @@ class QuestionPredictor(Model):
         span_slot_labels = []
         for i, n in enumerate(self.slot_labels):
             if 'span_slot_%s'%n in kwargs and kwargs['span_slot_%s'%n] is not None:
-                span_slot_labels.append(kwargs['span_slot_%s'%n].squeeze(2) * span_mask)
+                span_slot_labels.append(kwargs['span_slot_%s'%n] * span_mask)
         if len(span_slot_labels) == 0:
             span_slot_labels = None
 

@@ -42,9 +42,7 @@ class SpanDetector(Model):
 
         self.embedding_dropout = Dropout(p=embedding_dropout)
 
-        #self.threshold_metric = ThresholdMetric()
-        self.threshold_metric = ThresholdMetric(prf_outfile="/tmp/prcurve.tsv", thresholds = [.5])
-        #self.threshold_metric = ThresholdMetric(prf_outfile="/tmp/prcurve.tsv", thresholds = [.5], match_heuristic = lambda x, y: x.iou(y) >= .5)
+        self.threshold_metric = ThresholdMetric()
 
         self.stacked_encoder = stacked_encoder
 
@@ -57,7 +55,6 @@ class SpanDetector(Model):
                 labeled_spans: torch.LongTensor = None,
                 annotations: Dict = None,
                 **kwargs):
-        
         embedded_text_input = self.embedding_dropout(self.text_field_embedder(text))
         mask = get_text_field_mask(text)
         embedded_predicate_indicator = self.predicate_feature_embedding(predicate_indicator.long())
@@ -72,7 +69,6 @@ class SpanDetector(Model):
                                      "must be equal to total_embedding_dim + 1.")
 
         encoded_text = self.stacked_encoder(embedded_text_with_predicate_indicator, mask)
-
         span_hidden, span_mask = self.span_hidden(encoded_text, encoded_text, mask, mask)
 
         logits = self.pred(F.relu(span_hidden)).squeeze()
@@ -85,7 +81,6 @@ class SpanDetector(Model):
             loss = F.binary_cross_entropy_with_logits(logits, prediction_mask, weight=span_mask.float(), size_average=False)
             output_dict["loss"] = loss
             if not self.training:
-            #if True:
                 spans = self.to_scored_spans(probs, span_mask)
                 self.threshold_metric(spans, annotations)
 
@@ -203,7 +198,7 @@ class SpanDetector(Model):
         return transition_matrix
 
     @classmethod
-    def from_params(cls, vocab: Vocabulary, params: Params) -> 'BIOLabeler':
+    def from_params(cls, vocab: Vocabulary, params: Params) -> 'SpanDetector':
         embedder_params = params.pop("text_field_embedder")
         text_field_embedder = TextFieldEmbedder.from_params(vocab, embedder_params)
         stacked_encoder = Seq2SeqEncoder.from_params(params.pop("stacked_encoder"))

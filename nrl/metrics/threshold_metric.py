@@ -4,7 +4,7 @@ import torch
 import networkx as nx
 import random
 
-from allennlp.nn.util import get_lengths_from_binary_sequence_mask, ones_like
+from allennlp.nn.util import get_lengths_from_binary_sequence_mask
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.training.metrics.metric import Metric
 

@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Set, Tuple
 
 import torch
 
-from allennlp.nn.util import get_lengths_from_binary_sequence_mask, ones_like
+from allennlp.nn.util import get_lengths_from_binary_sequence_mask
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.training.metrics.metric import Metric
 
@@ -39,7 +39,7 @@ class QuestionPredictionMetric(Metric):
             mask: Optional[torch.Tensor] = None,
             sequence_mask: Optional[torch.Tensor] = None):
         if mask is None:
-            mask = ones_like(slot_labels)
+            mask = torch.ones_like(slot_labels)
 
         gold = []
         pred = []
@@ -70,8 +70,8 @@ class QuestionPredictionMetric(Metric):
 
                 for n in range(mask.size(1)):
                     if mask[b][n] == 1:
-                        p.append(self._vocabulary.get_index_to_token_vocabulary("slot_%s_labels"%(l))[argmax_predictions[b, n]])
-                        g.append(self._vocabulary.get_index_to_token_vocabulary("slot_%s_labels"%(l))[gold_labels[b, n]])
+                        p.append(self._vocabulary.get_index_to_token_vocabulary("slot_%s_labels"%(l))[int(argmax_predictions[b, n])])
+                        g.append(self._vocabulary.get_index_to_token_vocabulary("slot_%s_labels"%(l))[int(gold_labels[b, n])])
                         if i == 0:
                             if gold_spans[b][n] in spans:
                                 has_span.append(True)
