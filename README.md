@@ -13,6 +13,7 @@ This library requires [AllenNLP](https://github.com/allenai/allennlp).
 # Pretrained model
 
 A pretrained model can be downloaded from here: [Download Pretrained Model](https://drive.google.com/open?id=1FvMpjTfumVaSfwTOdWbJfEYFgGSAs0CS).
+
 This model uses 8 LSTM-layers for both span detection and question generation, and a 4-layer LSTM generator.
 It also uses ELMo deep contextualized word representations.
 
@@ -26,7 +27,7 @@ To run predictions with this model on new text, prepare a JSON-lines document wi
 Run prediction with the following command:
 
 ```
-python -m allennlp.run predict {$PATH_TO_DOWNLOADED_MODEL}/qasrl_parser_elmo.tar.gz /tmp/input.txt --include-package nrl --predictor qasrl_parser --output-file {$OUTPUT_FILE}
+python -m allennlp.run predict {$PATH_TO_DOWNLOADED_MODEL}/qasrl_parser_elmo.tar.gz {$INPUT_FILE} --include-package nrl --predictor qasrl_parser --output-file {$OUTPUT_FILE}
 ```
 
 Which will produce the following output:
