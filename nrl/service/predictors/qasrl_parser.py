@@ -125,7 +125,7 @@ class QaSrlParserPredictor(Predictor):
         verbs_for_instances = results["verbs"] 
         results["verbs"] = []
 
-        span_outputs = self._model.span_detector.forward_on_instances(instances, cuda_device)
+        span_outputs = self._model.span_detector.forward_on_instances(instances)
         
         instances_with_spans = []
         instance_spans = []
@@ -140,7 +140,7 @@ class QaSrlParserPredictor(Predictor):
             field_dict['labeled_spans'] = labeled_span_field
             instances_with_spans.append(Instance(field_dict))
 
-        outputs = self._model.question_predictor.forward_on_instances(instances, cuda_device)
+        outputs = self._model.question_predictor.forward_on_instances(instances)
 
         for output, spans, verb, index in zip(outputs, instance_spans, verbs_for_instances, verb_indexes):
             questions = {}

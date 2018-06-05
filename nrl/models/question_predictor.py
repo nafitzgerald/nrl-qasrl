@@ -127,7 +127,7 @@ class QuestionPredictor(Model):
 
                     slots = []
                     for l, n in enumerate(self.slot_labels):
-                        slot_word = self.vocab.get_index_to_token_vocabulary("slot_%s_labels"%n)[slot_preds[l][b, i]]
+                        slot_word = self.vocab.get_index_to_token_vocabulary("slot_%s_labels"%n)[int(slot_preds[l][b, i])]
                         slots.append(slot_word)
 
                     slots = tuple(slots)
