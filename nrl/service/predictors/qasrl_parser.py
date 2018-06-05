@@ -27,7 +27,7 @@ def read_verb_file(verb_file):
             inflections = l.strip().split('\t')
             stem, presentsingular3rd, presentparticiple, past, pastparticiple = inflections
             for inf in inflections:
-                verb_map[inf] = {"stem" : stem, "presentsingular3rd" : presentsingular3rd, "presentparticiple":presentparticiple, "past":past, "pastparticiple":pastparticiple}
+                verb_map[inf] = {"stem" : stem, "presentSingular3rd" : presentsingular3rd, "presentParticiple":presentparticiple, "past":past, "pastParticiple":pastparticiple}
     return verb_map
 
 def read_pretrained_file(embeddings_filename, embedding_dim=100):
