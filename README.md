@@ -8,6 +8,11 @@ Data can be found at: <http://qasrl.org>
 
 This library requires [AllenNLP](https://github.com/allenai/allennlp).
 
+In order to use the models below, you must also:
+
+- Download the pretrained GloVe embeddings and copy the file to `data/glove/glove.6B.100d.txt.gz` in the repository directory.
+- Download the pretrained ElMO word representations and copy the files to `data/elmo/elmo_2x4096_512_2048cnn_2xhighway_options.json` and `data/elmo/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5`
+
 # Pretrained model
 
 A pretrained model can be downloaded from here: [Download Pretrained Model](https://drive.google.com/open?id=1FvMpjTfumVaSfwTOdWbJfEYFgGSAs0CS).
@@ -51,7 +56,7 @@ python -m allennlp.run train {$CONFIG_FILE} --include-package nrl -s {$SAVE_DIRE
 Two config files are included with this repository. These must be modified in order to point the `*_data_path` fields to your data directory.
 
 1. `configs/train_span.json` - which reproduces the Span-based model from our paper.
-2. `configs/train_span_elmo.json` - which is the same model but includes ELMo word representations. In order to run this you must first download the word representations from [here](https://allennlp.org/elmo) and modify the `model/text_field_embedder/elmo/*_file` fields to point to this.
+2. `configs/train_span_elmo.json` - which is the same model but includes ELMo word representations.
 
 ## Training Question Detector
 
