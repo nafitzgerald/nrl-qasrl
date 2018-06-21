@@ -14,6 +14,7 @@ A pretrained model can be downloaded from here: [Download Pretrained Model](http
 
 This model uses 8 LSTM-layers for both span detection and question generation, and a 4-layer LSTM generator.
 It also uses ELMo deep contextualized word representations.
+This model achieves 85.0% F1 span detection (with t=0.5) and 47.6% question prediction accuracy on the dense dev set (compared to 81.3 and 47.2 for the model reported in our paper).
 
 To run predictions with this model on new text, prepare a JSON-lines document with one line for each sentence with the following format:
 
@@ -67,3 +68,10 @@ To combine these two trained models into one model which can then be run for pre
 python scripts/combine_models.py --span {$PATH_TO_SPAN_MODEL_DIRECTORY} --ques {$PATH_TO_QUESTION_MODEL_DIRECTORY} --out {$OUTPUT_TAR_GZ_FILE}
 ```
 
+# Evaluating on the dense dev set
+
+To evaluate on the densely labeled Dev set described in our paper, run the command:
+
+```
+env CUDA_VISIBLE_DEVICES=1 python -m allennlp.run evaluate {$MODEL_DIRECTORY}/model.tar.gz --evaluation-data-file {$DATA_DIRECTORY}/dense/dev.jsonl.gz --cuda-device 0 --include-package nrl --overrides '{"dataset_reader": {"question_sources": "turk", "min_answers": 6, "min_valid_answers": 5}}'
+```
