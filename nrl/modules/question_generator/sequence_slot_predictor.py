@@ -39,7 +39,7 @@ class SequenceSlotPredictor(QuestionGenerator):
 
         slot_embedders = []
         for i, n in enumerate(self._slot_labels[:-1]):
-            num_labels = self._vocab.get_vocab_size("slot_%s_labels"%n)
+            num_labels = self._vocab.get_vocab_size("slot_%s"%n)
             assert num_labels > 0, "Slot named %s has 0 vocab size"%(n)
             embedder = Embedding(num_labels, self._dim_embedding)
             self.add_module('embedder_%s'%n, embedder)
@@ -102,7 +102,7 @@ class SequenceSlotPredictor(QuestionGenerator):
         slot_preds = []
         slot_num_labels = []
         for i, n in enumerate(self._slot_labels):
-            num_labels = self._vocab.get_vocab_size("slot_%s_labels"%n)
+            num_labels = self._vocab.get_vocab_size("slot_%s"%n)
             slot_num_labels.append(num_labels)
 
             if share_slot_hidden:

@@ -85,6 +85,9 @@ class QuestionPredictor(Model):
         output_dict = {}
         slot_logits = self.question_generator(span_reps, slot_labels=span_slot_labels)
         for i, n in enumerate(self.slot_labels):
+            # Replace scores for padding and unk
+            slot_logits[i][:,:,0:2] -= 9999999
+
             output_dict["slot_logits_%s"%n] = slot_logits[i]
 
         loss = None
@@ -127,7 +130,7 @@ class QuestionPredictor(Model):
 
                     slots = []
                     for l, n in enumerate(self.slot_labels):
-                        slot_word = self.vocab.get_index_to_token_vocabulary("slot_%s_labels"%n)[int(slot_preds[l][b, i])]
+                        slot_word = self.vocab.get_index_to_token_vocabulary("slot_%s"%n)[int(slot_preds[l][b, i])]
                         slots.append(slot_word)
 
                     slots = tuple(slots)

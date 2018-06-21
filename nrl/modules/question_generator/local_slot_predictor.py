@@ -25,7 +25,7 @@ class LocalSlotPredictor(QuestionGenerator):
         slot_preds = []
         slot_num_labels = []
         for i, n in enumerate(self._slot_labels):
-            num_labels = self._vocab.get_vocab_size("slot_%s_labels"%n)
+            num_labels = self._vocab.get_vocab_size("slot_%s"%n)
             assert num_labels > 0, "Slot named %s has 0 vocab size"%(n)
             slot_num_labels.append(num_labels)
 

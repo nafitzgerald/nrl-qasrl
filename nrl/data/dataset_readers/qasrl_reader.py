@@ -139,7 +139,7 @@ class QaSrlReader(DatasetReader):
 
         if annotations is not None:
             for i, slot_name in enumerate(self._slot_labels):
-                span_slot = ListField([LabelField(ann.slots[i], label_namespace="slot_%s_labels"%slot_name) for ann in annotations for span in ann.all_spans])
+                span_slot = ListField([LabelField(ann.slots[i], label_namespace="slot_%s"%slot_name) for ann in annotations for span in ann.all_spans])
                 instance_dict['span_slot_%s'%slot_name] = span_slot
 
             labeled_span_field = ListField([SpanField(span.start(), span.end(), text_field) for ann in annotations for span in ann.all_spans])
