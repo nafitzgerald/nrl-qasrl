@@ -10,20 +10,6 @@ def main(ques_dir, span_dir, outfile):
         if name.startswith('span_hidden') or name.startswith('frame_'):
             continue
 
-        if False:
-            if name == 'text_field_embedder.token_embedder_tokens.weight':
-                new_w = w.new().resize_(w.size(0) + 4, w.size(1))
-                new_w[0:18,:].copy_(w[0:18,:])
-                new_w[18].copy_(w[0])
-                new_w[19:20,:].copy_(w[18:19,:])
-                new_w[20].copy_(w[0])
-                new_w[21:156,:].copy_(w[19:154,:])
-                new_w[156].copy_(w[0])
-                new_w[157:162,:].copy_(w[154:159,:])
-                new_w[162].copy_(w[0])
-                new_w[163:,:].copy_(w[159:,:])
-                w = new_w
-
         if name.startswith('span_encoder'):
             name = name.replace('span_encoder', 'stacked_encoder')
 
