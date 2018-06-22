@@ -15,7 +15,16 @@ In order to use the models below, you must also:
 
 # Pretrained model
 
-A pretrained model can be downloaded from here: [Download Pretrained Model](https://drive.google.com/open?id=1FvMpjTfumVaSfwTOdWbJfEYFgGSAs0CS).
+Clone this repository and make sure you have installed prerequisites as listed above.
+
+Download and unpack the pretrained model in the `data` folder from the command line :
+```
+cd scripts
+./download_pretrained.sh
+```
+
+Alternatively, you can download the compressed archive manually from [here](https://drive.google.com/open?id=1FvMpjTfumVaSfwTOdWbJfEYFgGSAs0CS) and uncompress it in the `data/qasrl_parser_elmo` folder.
+
 
 This model uses 8 LSTM-layers for both span detection and question generation, and a 4-layer LSTM generator.
 It also uses ELMo deep contextualized word representations.
@@ -28,10 +37,10 @@ To run predictions with this model on new text, prepare a JSON-lines document wi
 {"sentence": "The man ate the burrito and threw the trash in the garbage"}
 ```
 
-Run prediction with the following command:
+From the root of the repository, run prediction with the following command:
 
 ```
-python -m allennlp.run predict {$PATH_TO_DOWNLOADED_MODEL}/qasrl_parser_elmo.tar.gz {$INPUT_FILE} --include-package nrl --predictor qasrl_parser --output-file {$OUTPUT_FILE}
+python -m allennlp.run predict ./data/qasrl_parser_elmo {$INPUT_FILE} --include-package nrl --predictor qasrl_parser --output-file {$OUTPUT_FILE}
 ```
 
 Which will produce the following output:
