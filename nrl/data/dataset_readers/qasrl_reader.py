@@ -69,7 +69,7 @@ class QaSrlReader(DatasetReader):
                     for line in f:
                         data.append(json.loads(line))
             elif file_path.endswith(".json"):
-                with codecs.open(file_path, 'r', encoding='utf8') as open_file:
+                with codecs.open(file_path, 'r', encoding='utf8') as f:
                     for line in f:
                         data.append(json.loads(line))
             
