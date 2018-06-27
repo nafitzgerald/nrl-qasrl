@@ -112,14 +112,18 @@ class QaSrlParserPredictor(Predictor):
             num_words, embsize = span_weights.size()
             new_weights = span_weights.new().resize_(num_words + num_added_words, embsize)
             new_weights[:num_words].copy_(span_weights)
-            new_weights[num_words:].copy_(added_weights)
+            new_weights[num_words:].copy_(torch.reshape(added_weights,(
+                added_weights.shape[0]/new_weights[num_words:].shape[1],
+                added_weights.shape[0]/new_weights[num_words:].shape[0])))
             self._model.span_detector.text_field_embedder.token_embedder_tokens.weight = Parameter(new_weights)
 
             ques_weights = self._model.question_predictor.text_field_embedder.token_embedder_tokens.weight.data
             num_words, embsize = ques_weights.size()
             new_weights = ques_weights.new().resize_(num_words + num_added_words, embsize)
             new_weights[:num_words].copy_(ques_weights)
-            new_weights[num_words:].copy_(added_weights)
+            new_weights[num_words:].copy_(torch.reshape(added_weights,(
+                added_weights.shape[0]/new_weights[num_words:].shape[1],
+                added_weights.shape[0]/new_weights[num_words:].shape[0])))
             self._model.question_predictor.text_field_embedder.token_embedder_tokens.weight = Parameter(new_weights)
 
         verbs_for_instances = results["verbs"] 
