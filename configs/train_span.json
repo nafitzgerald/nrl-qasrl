@@ -21,7 +21,8 @@
       }
     },
     "stacked_encoder": {
-      "type": "alternating_highway_lstm_cuda",
+      "type": "alternating_lstm",
+      "use_highway": true,
       "input_size": 200,
       "hidden_size": 300,
       "num_layers": 8,
