@@ -20,6 +20,14 @@ from nrl.data.util import cleanse_sentence_text
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
+DO_VERBS = {"do", "does", "doing", "did", "done"}
+BE_VERBS = {"be", "being", "been", "am", "'m", "is", "'s", "ai", "are", "'re", "was", "were"}
+WILL_VERBS = {"will", "'ll", "wo"}
+HAVE_VERBS = {"have", "having", "'ve", "has", "had", "'d"}
+MODAL_VERBS = {"can", "ca", "could", "may", "might", "must", "shall", "should", "ought"}
+
+AUX_VERBS = DO_VERBS | BE_VERBS | WILL_VERBS | HAVE_VERBS | MODAL_VERBS
+
 def read_verb_file(verb_file):
     verb_map = {}
     with open(verb_file, 'r') as f:
@@ -75,7 +83,7 @@ class QaSrlParserPredictor(Predictor):
 
         verb_indexes = []
         for i, word in enumerate(tokens):
-            if word.pos_ == "VERB":
+            if word.pos_ == "VERB" and not word.text.lower() in AUX_VERBS:
                 verb = word.text
                 result_dict["verbs"].append(verb)
 
@@ -138,26 +146,29 @@ class QaSrlParserPredictor(Predictor):
             text_field = field_dict['text']
 
             spans = [s[0] for s in span_output['spans'] if s[1] >= 0.5]
-            instance_spans.append(spans)
+            if len(spans) > 0:
+                instance_spans.append(spans)
 
-            labeled_span_field = ListField([SpanField(span.start(), span.end(), text_field) for span in spans])
-            field_dict['labeled_spans'] = labeled_span_field
-            instances_with_spans.append(Instance(field_dict))
+                labeled_span_field = ListField([SpanField(span.start(), span.end(), text_field) for span in spans])
+                field_dict['labeled_spans'] = labeled_span_field
+                instances_with_spans.append(Instance(field_dict))
 
-        outputs = self._model.question_predictor.forward_on_instances(instances)
+        if instances_with_spans:
+            outputs = self._model.question_predictor.forward_on_instances(instances_with_spans)
 
-        for output, spans, verb, index in zip(outputs, instance_spans, verbs_for_instances, verb_indexes):
-            questions = {}
-            for question, span in zip(output['questions'], spans):
-                question_text = self.make_question_text(question, verb)
-                span_text = " ".join([words[i] for i in range(span.start(), span.end()+1)])
-                questions.setdefault(question_text, []).append(span_text)
+            for output, spans, verb, index in zip(outputs, instance_spans, verbs_for_instances, verb_indexes):
+                questions = {}
+                for question, span in zip(output['questions'], spans):
+                    question_text = self.make_question_text(question, verb)
+                    span_text = " ".join([words[i] for i in range(span.start(), span.end()+1)])
+                    span_rep = {"start": span.start(), "end": span.end(), "text":span_text}
+                    questions.setdefault(question_text, []).append(span_rep)
 
-            qa_pairs = []
-            for question, spans in questions.items():
-                qa_pairs.append({"question":question, "spans":spans})
+                qa_pairs = []
+                for question, spans in questions.items():
+                    qa_pairs.append({"question":question, "spans":spans})
 
-            results["verbs"].append({"verb": verb, "qa_pairs": qa_pairs, "index": index})
+                results["verbs"].append({"verb": verb, "qa_pairs": qa_pairs, "index": index})
 
         return results
 

@@ -56,7 +56,7 @@ class QuestionPredictor(Model):
                 predicate_indicator: torch.LongTensor,
                 labeled_spans: torch.LongTensor,
                 **kwargs):
-        span_mask = (labeled_spans[:, :, 0] >= 0).squeeze(-1).long()
+        span_mask = (labeled_spans[:, :, 0] >= 0).long()
 
         span_slot_labels = []
         for i, n in enumerate(self.slot_labels):
