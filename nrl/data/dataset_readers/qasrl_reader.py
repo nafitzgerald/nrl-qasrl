@@ -60,19 +60,18 @@ class QaSrlReader(DatasetReader):
         for file_path in file_list.split(","):
             if file_path.strip() == "":
                 continue
-            file_path = cached_path(file_path)
 
             logger.info("Reading QASRL instances from dataset file at: %s", file_path)
             data = []
             if file_path.endswith('.gz'):
-                with gzip.open(file_path, 'r') as f:
+                with gzip.open(cached_path(file_path), 'r') as f:
                     for line in f:
                         data.append(json.loads(line))
-            elif file_path.endswith(".json"):
-                with codecs.open(file_path, 'r', encoding='utf8') as f:
+            elif file_path.endswith(".jsonl"):
+                with codecs.open(cached_path(file_path), 'r', encoding='utf8') as f:
                     for line in f:
                         data.append(json.loads(line))
-            
+ 
             for item in data:
                 sent_id = item["sentenceId"]
                 sentence_tokens = item["sentenceTokens"]
