@@ -4397,7 +4397,6 @@ culminate	culminates	culminating	culminated	culminated
 cultivate	cultivates	cultivating	cultivated	cultivated
 culture	cultures	culturing	cultured	cultured
 culturize	culturizes	culturizing	culturized	culturized
-cum	cums	cumming	came	came
 cumber	cumbers	cumbering	cumbered	cumbered
 cumbre	cumbres	cumbring	cumbred	cumbred
 cume	cumes	cuming	cumed	cumed

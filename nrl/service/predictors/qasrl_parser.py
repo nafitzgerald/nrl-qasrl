@@ -137,21 +137,22 @@ class QaSrlParserPredictor(Predictor):
         verbs_for_instances = results["verbs"] 
         results["verbs"] = []
 
-        span_outputs = self._model.span_detector.forward_on_instances(instances)
-        
         instances_with_spans = []
         instance_spans = []
-        for instance, span_output in zip(instances, span_outputs):
-            field_dict = instance.fields
-            text_field = field_dict['text']
+        if instances:
+            span_outputs = self._model.span_detector.forward_on_instances(instances)
+        
+            for instance, span_output in zip(instances, span_outputs):
+                field_dict = instance.fields
+                text_field = field_dict['text']
 
-            spans = [s[0] for s in span_output['spans'] if s[1] >= 0.5]
-            if len(spans) > 0:
-                instance_spans.append(spans)
+                spans = [s[0] for s in span_output['spans'] if s[1] >= 0.5]
+                if len(spans) > 0:
+                    instance_spans.append(spans)
 
-                labeled_span_field = ListField([SpanField(span.start(), span.end(), text_field) for span in spans])
-                field_dict['labeled_spans'] = labeled_span_field
-                instances_with_spans.append(Instance(field_dict))
+                    labeled_span_field = ListField([SpanField(span.start(), span.end(), text_field) for span in spans])
+                    field_dict['labeled_spans'] = labeled_span_field
+                    instances_with_spans.append(Instance(field_dict))
 
         if instances_with_spans:
             outputs = self._model.question_predictor.forward_on_instances(instances_with_spans)
