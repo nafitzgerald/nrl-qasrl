@@ -69,7 +69,7 @@ class QaSrlParserPredictor(Predictor):
 
         self._verb_map = read_verb_file("data/wiktionary/en_verb_inflections.txt")
 
-        self._pretrained_vectors = read_pretrained_file("data/glove/glove.6B.100d.txt.gz")
+        self._pretrained_vectors = read_pretrained_file("https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.6B.100d.txt.gz")
 
     def _sentence_to_qasrl_instances(self, json_dict: JsonDict) -> Tuple[List[Instance], JsonDict]:
         sentence = json_dict["sentence"]
