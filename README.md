@@ -6,7 +6,7 @@ Data can be found at: <http://qasrl.org>
 
 # Prerequisites
 
-This library requires [AllenNLP](https://github.com/allenai/allennlp).
+This library requires [AllenNLP](https://github.com/allenai/allennlp). This code was built for Allennlp 0.5.0 and PyTorch 0.4.0 and is **NOT** being actively updated.
 
 In order to use the models below, you must also:
 
